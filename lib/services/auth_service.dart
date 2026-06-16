@@ -7,25 +7,19 @@ import 'firebase_service.dart';
 class AuthService {
   static final _auth = FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
-  static final _googleSignIn = GoogleSignIn();
 
   static User? get currentUser => _auth.currentUser;
   static Stream<User?> get authStateChanges => _auth.authStateChanges();
   static bool get isLoggedIn => currentUser != null;
   static String get userId => currentUser?.uid ?? '';
 
-  // ── Google Sign In ────────────────────────────────────────────────────────
   static Future<User?> signInWithGoogle() async {
     try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
-
-      final googleAuth = await googleUser.authentication;
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final googleAuth = googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-
       final userCredential = await _auth.signInWithCredential(credential);
       await _createOrUpdateUser(userCredential.user!);
       await FirebaseService.logEvent('login', {'method': 'google'});
@@ -36,18 +30,15 @@ class AuthService {
     }
   }
 
-  // ── Apple Sign In ─────────────────────────────────────────────────────────
   static Future<User?> signInWithApple() async {
     try {
       final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [AppleIDAuthorizationScopes.email, AppleIDAuthorizationScopes.fullName],
       );
-
       final oauthCredential = OAuthProvider('apple.com').credential(
         idToken: appleCredential.identityToken,
         accessToken: appleCredential.authorizationCode,
       );
-
       final userCredential = await _auth.signInWithCredential(oauthCredential);
       await _createOrUpdateUser(userCredential.user!);
       await FirebaseService.logEvent('login', {'method': 'apple'});
@@ -58,7 +49,6 @@ class AuthService {
     }
   }
 
-  // ── Email & Password ──────────────────────────────────────────────────────
   static Future<User?> signUpWithEmail(String email, String password, String name) async {
     try {
       final credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
@@ -86,16 +76,14 @@ class AuthService {
   }
 
   static Future<void> signOut() async {
-    await _googleSignIn.signOut();
+    await GoogleSignIn.instance.signOut();
     await _auth.signOut();
     await FirebaseService.logEvent('logout');
   }
 
-  // ── Firestore User Doc ────────────────────────────────────────────────────
   static Future<void> _createOrUpdateUser(User user) async {
     final doc = _firestore.collection('users').doc(user.uid);
     final snap = await doc.get();
-
     if (!snap.exists) {
       await doc.set({
         'uid': user.uid,
@@ -112,7 +100,6 @@ class AuthService {
     } else {
       await doc.update({'lastSeen': FieldValue.serverTimestamp()});
     }
-
     await FirebaseService.setUserProperty('plan', snap.data()?['plan'] ?? 'free');
   }
 

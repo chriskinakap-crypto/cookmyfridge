@@ -123,7 +123,7 @@ class ShoppingScreen extends StatelessWidget {
         actions: [
           if (state.shoppingList.isNotEmpty)
             TextButton(
-              onPressed: () { for (var i = state.shoppingList.length - 1; i >= 0; i--) { if (state.shoppingList[i].isDone) state.deleteShoppingItem(i); } },
+              onPressed: () { for (var i = state.shoppingList.length - 1; i >= 0; i--) { if (state.shoppingList[i]['isDone'] ?? false) state.deleteShoppingItem(i); } },
               child: const Text('Clear done', style: TextStyle(color: Colors.white, fontSize: 12)),
             ),
         ],
@@ -149,8 +149,8 @@ class ShoppingScreen extends StatelessWidget {
               itemBuilder: (_, i) {
                 final item = state.shoppingList[i];
                 return ListTile(
-                  leading: Checkbox(value: item.isDone, onChanged: (_) => state.toggleShoppingItem(i), activeColor: kPrimary),
-                  title: Text(item.name, style: TextStyle(decoration: item.isDone ? TextDecoration.lineThrough : null, color: item.isDone ? Colors.grey[400] : null)),
+                  leading: Checkbox(value: item['isDone'] ?? false, onChanged: (_) => state.toggleShoppingItem(i), activeColor: kPrimary),
+                  title: Text(item['name'] ?? '', style: TextStyle(decoration: item['isDone'] ?? false ? TextDecoration.lineThrough : null, color: item['isDone'] ?? false ? Colors.grey[400] : null)),
                   trailing: IconButton(icon: const Icon(Icons.delete_outline, color: Colors.grey), onPressed: () => state.deleteShoppingItem(i)),
                 );
               },
@@ -230,3 +230,5 @@ class ProfileScreen extends StatelessWidget {
     ]),
   );
 }
+
+

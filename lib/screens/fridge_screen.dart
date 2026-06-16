@@ -25,7 +25,7 @@ class _FridgeScreenState extends State<FridgeScreen> {
   void initState() {
     super.initState();
     AdService.loadInterstitial();
-    AdService.loadRewardedAd();
+    AdService.loadRewardedAd(({required dynamic ad, required dynamic reward}) {});
     _checkPro();
   }
 
@@ -126,7 +126,7 @@ class _FridgeScreenState extends State<FridgeScreen> {
   );
 
   Widget _watchAdButton() => GestureDetector(
-    onTap: () => AdService.showRewardedAd(onRewarded: () {
+    onTap: () => AdService.showRewardedAd(onRewarded: ({required dynamic reward}) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Unlocked all 3 recipes!'), backgroundColor: kPrimary));
       setState(() => _isPro = true);
     }),

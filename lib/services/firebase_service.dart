@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import '../firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-// Background message handler — must be top-level function
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   print('Background message: ${message.messageId}');
 }
 
@@ -16,30 +16,23 @@ class FirebaseService {
   static final _localNotifs = FlutterLocalNotificationsPlugin();
 
   static Future<void> initialize() async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     await _setupMessaging();
     await _setupLocalNotifications();
   }
 
   static Future<void> _setupMessaging() async {
-    // Request notification permission
     final settings = await messaging.requestPermission(
       alert: true, badge: true, sound: true,
     );
     print('Notification permission: ${settings.authorizationStatus}');
-
-    // Handle background messages
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _showLocalNotification(
         title: message.notification?.title ?? 'CookMyFridge',
         body: message.notification?.body ?? '',
       );
     });
-
-    // Get FCM token for this device
     final token = await messaging.getToken();
     print('FCM Token: $token');
   }
@@ -51,9 +44,7 @@ class FirebaseService {
       requestBadgePermission: true,
       requestSoundPermission: true,
     );
-    await _localNotifs.initialize(
-      const InitializationSettings(android: androidSettings, iOS: iosSettings),
-    );
+    await _localNotifs.initialize(settings: const InitializationSettings(android: androidSettings, iOS: iosSettings));
   }
 
   static Future<void> _showLocalNotification({required String title, required String body}) async {
@@ -62,28 +53,27 @@ class FirebaseService {
       channelDescription: 'CookMyFridge notifications',
       importance: Importance.high, priority: Priority.high,
     );
-    await _localNotifs.show(0, title, body, const NotificationDetails(android: androidDetails));
+    await _localNotifs.show(id: 0, title: title, body: body, notificationDetails: const NotificationDetails(android: androidDetails));
   }
 
-  // Schedule daily meal reminder
   static Future<void> scheduleMealReminder({required int hour, required int minute}) async {
-    // Using flutter_local_notifications for scheduled notifications
     await _localNotifs.periodicallyShow(
-      1, "What's cooking tonight? 🍳",
-      "Tap to discover recipes with what you have in your fridge!",
-      RepeatInterval.daily,
-      const NotificationDetails(
+      id: 1,
+      title: "What is cooking tonight?",
+      body: "Tap to discover recipes with what you have in your fridge!",
+      repeatInterval: RepeatInterval.daily,
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails('reminders', 'Meal Reminders', channelDescription: 'Daily meal planning reminders'),
       ),
+      androidScheduleMode: AndroidScheduleMode.inexact,
     );
   }
 
   static Future<void> cancelReminders() async {
-    await _localNotifs.cancel(1);
+    await _localNotifs.cancel(id: 1);
   }
 
-  // Analytics helpers
-  static Future<void> logEvent(String name, [Map<String, dynamic>? params]) async {
+  static Future<void> logEvent(String name, [Map<String, Object>? params]) async {
     await analytics.logEvent(name: name, parameters: params);
   }
 

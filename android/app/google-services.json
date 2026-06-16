@@ -1,1 +1,29 @@
-{"project_info":{"project_number":"123456789","project_id":"cookmyfridge-test","storage_bucket":"cookmyfridge-test.appspot.com"},"client":[{"client_info":{"mobilesdk_app_id":"1:123456789:android:abcdef123456","android_client_info":{"package_name":"com.example.cookmyfridge"}},"oauth_client":[],"api_key":[{"current_key":"AIzaSyTest123456789"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}
+{
+  "project_info": {
+    "project_number": "232949842942",
+    "project_id": "cookmyfridge-2351f",
+    "storage_bucket": "cookmyfridge-2351f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232949842942:android:1c4b484268f727969ff6af",
+        "android_client_info": {
+          "package_name": "com.example.cookmyfridge"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAK_tsMmE2G5regLXAwVMh09Bqe3GBCtK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

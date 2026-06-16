@@ -20,6 +20,15 @@ class AppState extends ChangeNotifier {
   StreamSubscription? _mealSub;
 
   List<Map<String, dynamic>> shoppingItems = [];
+  List<Map<String, dynamic>> get shoppingList => shoppingItems;
+
+  void unsaveRecipe(dynamic recipe) {
+    savedRecipes.removeWhere((r) => r.title == recipe.title);
+    notifyListeners();
+  }
+
+
+
   StreamSubscription? _shopSub;
 
   List<Map<String, dynamic>> searchHistory = [];
@@ -156,3 +165,7 @@ class AppState extends ChangeNotifier {
     } catch (e) { chatHistory.removeLast(); notifyListeners(); return 'Sorry, I could not connect. Try again!'; }
   }
 }
+
+
+
+

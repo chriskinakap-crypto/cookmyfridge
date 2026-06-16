@@ -18,26 +18,26 @@ dependencies:
   provider: ^6.1.1
 
   # UI
-  google_fonts: ^6.1.0
+  google_fonts: ^8.1.0
   flutter_animate: ^4.3.0
   flutter_rating_bar: ^4.0.1
   cached_network_image: ^3.3.1
 
   # Sharing
-  share_plus: ^7.2.1
+  share_plus: ^13.1.0
   url_launcher: ^6.2.4
 
   # Firebase (Phase 2)
-  firebase_core: ^2.27.0
-  firebase_auth: ^4.17.8
-  cloud_firestore: ^4.15.8
-  firebase_messaging: ^14.7.19
-  firebase_analytics: ^10.8.9
-  firebase_storage: ^11.6.9
-  google_sign_in: ^6.2.1
-  sign_in_with_apple: ^6.1.0
-  flutter_local_notifications: ^17.0.0
-  flutter_secure_storage: ^9.0.0
+  firebase_core: ^4.10.0
+  firebase_auth: ^6.5.2
+  cloud_firestore: ^6.5.0
+  firebase_messaging: ^16.3.0
+  firebase_analytics: ^12.4.2
+  firebase_storage: ^13.4.2
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^8.1.0
+  flutter_local_notifications: ^21.0.0
+  flutter_secure_storage: ^10.3.1
 
   # Phase 3 — Monetization
  
@@ -46,7 +46,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
