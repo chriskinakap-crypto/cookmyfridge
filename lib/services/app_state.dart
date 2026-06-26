@@ -96,7 +96,7 @@ class AppState extends ChangeNotifier {
       }
       await FirebaseService.logRecipeSearch(ingredients);
     } catch (e) {
-      error = 'Could not load recipes. Check your connection and try again.';
+      error = e.toString();
     }
     isLoading = false; notifyListeners();
   }
