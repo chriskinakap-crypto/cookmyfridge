@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import '../models/recipe.dart';
 
 class ApiService {
-  static const _apiKey = 'YOUR_GEMINI_API_KEY';
-  static const _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+  static const _apiKey = 'YOUR_OPENROUTER_API_KEY';
+  static const _baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
 
   static Future<List<Recipe>> getRecipes({
     required List<String> ingredients,
@@ -13,18 +13,26 @@ class ApiService {
   }) async {
     final dietText = filters.isNotEmpty ? 'Must be ${filters.join(', ')}.' : '';
     final prompt = 'User has: ${ingredients.join(', ')}. $dietText\nSuggest 3 recipes. Reply ONLY with JSON array, no markdown, no explanation:\n[{"title":"","time":"","difficulty":"","match":90,"calories":450,"protein":25,"carbs":40,"fat":15,"diet":["tag"],"ingredients":["item with quantity"],"steps":["detailed step"],"shopping":["missing ingredient"]}]';
+
     try {
       final response = await http.post(
         Uri.parse(_baseUrl),
-        headers: {'Content-Type': 'application/json', 'x-goog-api-key': _apiKey},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_apiKey',
+          'HTTP-Referer': 'https://cookmyfridge.app',
+          'X-Title': 'CookMyFridge',
+        },
         body: jsonEncode({
-          'contents': [{'parts': [{'text': prompt}]}],
-          'generationConfig': {'maxOutputTokens': 2000, 'temperature': 0.7},
+          'model': 'openai/gpt-3.5-turbo',
+          'messages': [{'role': 'user', 'content': prompt}],
+          'max_tokens': 2000,
         }),
       ).timeout(const Duration(seconds: 30));
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final text = data['candidates'][0]['content']['parts'][0]['text'] as String;
+        final text = data['choices'][0]['message']['content'] as String;
         final clean = text.replaceAll(RegExp(r'```json|```'), '').trim();
         final List<dynamic> jsonList = jsonDecode(clean);
         return jsonList.map((j) => Recipe.fromJson(j)).toList();
@@ -67,20 +75,6 @@ class ApiService {
         'steps': ['Boil water', 'Add ${ingredients.join(', ')}', 'Simmer for 20 minutes', 'Season and serve'],
         'shopping': ['vegetable stock', 'salt']
       }),
-      Recipe.fromJson({
-        'title': 'Baked $ing',
-        'time': '40 mins',
-        'difficulty': 'Medium',
-        'match': 70,
-        'calories': 400,
-        'protein': 22,
-        'carbs': 35,
-        'fat': 12,
-        'diet': ['Gluten-free'],
-        'ingredients': ingredients.map((i) => '300g $i').toList() + ['olive oil', 'garlic', 'herbs'],
-        'steps': ['Preheat oven to 180C', 'Prepare ${ingredients.join(', ')}', 'Bake for 30 minutes', 'Serve warm'],
-        'shopping': ['olive oil', 'garlic', 'herbs']
-      }),
     ];
   }
 
@@ -89,22 +83,28 @@ class ApiService {
     required List<Map<String, String>> history,
   }) async {
     try {
-      final contents = history.map((m) => {
-        'role': m['role'] == 'assistant' ? 'model' : 'user',
-        'parts': [{'text': m['content']}]
-      }).toList();
-      contents.add({'role': 'user', 'parts': [{'text': message}]});
+      final messages = [
+        ...history.map((m) => {'role': m['role'] == 'assistant' ? 'assistant' : 'user', 'content': m['content']}),
+        {'role': 'user', 'content': message},
+      ];
       final response = await http.post(
         Uri.parse(_baseUrl),
-        headers: {'Content-Type': 'application/json', 'x-goog-api-key': _apiKey},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $_apiKey',
+          'HTTP-Referer': 'https://cookmyfridge.app',
+          'X-Title': 'CookMyFridge',
+        },
         body: jsonEncode({
-          'contents': contents,
-          'generationConfig': {'maxOutputTokens': 300},
+          'model': 'openai/gpt-3.5-turbo',
+          'messages': messages,
+          'max_tokens': 300,
         }),
       ).timeout(const Duration(seconds: 30));
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['candidates'][0]['content']['parts'][0]['text'] as String;
+        return data['choices'][0]['message']['content'] as String;
       } else {
         return 'Sorry, I could not connect. Try again!';
       }
