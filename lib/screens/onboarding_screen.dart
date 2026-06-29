@@ -15,10 +15,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final _steps = [
     _Step(Icons.kitchen, 'Welcome to CookMyFridge', 'Turn whatever is in your fridge into delicious meals with AI-powered recipe suggestions.'),
-    _Step(Icons.auto_awesome, 'AI-powered recipes', 'Just type your ingredients and our AI chef instantly suggests recipes tailored to exactly what you have.'),
+    _Step(Icons.auto_awesome, 'AI-powered recipes', 'Just type your ingredients and our Chef Kinakap instantly suggests recipes tailored to exactly what you have.'),
     _Step(Icons.favorite_border, 'Save your favorites', 'Heart any recipe to save it forever. Build your own personal AI-curated cookbook over time.'),
     _Step(Icons.calendar_today, 'Plan your whole week', 'Use the meal planner to organize meals for the entire week and dramatically reduce food waste.'),
-    _Step(Icons.chat_bubble_outline, 'Ask your AI chef', 'Got a cooking question? Chat with your personal AI chef anytime for tips, substitutions and techniques.'),
+    _Step(Icons.chat_bubble_outline, 'Ask Chef Kinakap Kinakap', 'Got a cooking question? Chat with your personal Chef Kinakap anytime for tips, substitutions and techniques.'),
   ];
 
   void _next() async {

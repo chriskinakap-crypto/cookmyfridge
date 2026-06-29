@@ -166,7 +166,7 @@ class _UpgradeScreenState extends State<UpgradeScreen> {
       (Icons.no_meals, 'Completely ad-free experience', true),
       (Icons.sync, 'Sync across all your devices', true),
       (Icons.history, 'Full unlimited search history', true),
-      (Icons.support_agent, 'Priority AI chef responses', true),
+      (Icons.support_agent, 'Priority Chef Kinakap responses', true),
       (Icons.calendar_today, 'Advanced meal planning tools', true),
     ];
 

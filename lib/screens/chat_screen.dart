@@ -14,7 +14,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final _scroll = ScrollController();
   bool _sending = false;
   final List<Map<String, String>> _messages = [
-    {'role': 'assistant', 'content': 'Hi! I\'m your AI chef. Ask me anything about cooking, ingredient substitutions, techniques, or nutrition!'},
+    {'role': 'assistant', 'content': 'Hi! I\'m Chef Kinakap. Ask me anything about cooking, ingredient substitutions, techniques, or nutrition!'},
   ];
 
   @override
@@ -25,7 +25,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Container(width: 32, height: 32, decoration: const BoxDecoration(color: Colors.white24, shape: BoxShape.circle), child: const Center(child: Icon(Icons.restaurant, color: Colors.white, size: 18))),
           const SizedBox(width: 10),
           const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('AI Chef', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
+            Text('Chef Kinakap', style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
             Text('Always available', style: TextStyle(color: Colors.white70, fontSize: 11)),
           ]),
         ]),
@@ -75,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
           child: Row(children: [
             Expanded(child: TextField(
               controller: _ctrl,
-              decoration: const InputDecoration(hintText: 'Ask your chef...', hintStyle: TextStyle(fontSize: 14)),
+              decoration: const InputDecoration(hintText: 'Ask Chef Kinakap...', hintStyle: TextStyle(fontSize: 14)),
               onSubmitted: (_) => _send(context),
             )),
             const SizedBox(width: 8),
